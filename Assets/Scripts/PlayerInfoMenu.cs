@@ -24,6 +24,7 @@ public class PlayerInfoMenu
     private bool complete;
     public Character.races race;
     public Character.classes _class;
+    public Creature.alignments alignment;
 
     public PlayerInfoMenu(GameObject _menu)
     {
@@ -102,6 +103,7 @@ public class PlayerInfoMenu
 
         if (text.text == "-")
         {
+            text.fontSize = 30;
             clearClassDropdown();
         }
         else
@@ -113,6 +115,9 @@ public class PlayerInfoMenu
             if (text.text == "Halfling") race = Character.races.halfling;
             if (text.text == "Half Orc") race = Character.races.half_orc;
             if (text.text == "Human") race = Character.races.human;
+
+            if (text.text == "Half Elf" || text.text == "Half Orc" || text.text == "Halfling") text.fontSize = 20;
+            else text.fontSize = 30;
 
             clearClassDropdown();
             restrictClasses();
@@ -126,6 +131,7 @@ public class PlayerInfoMenu
 
         if (text.text == "-")
         {
+            text.fontSize = 30;
             clearAlignmentDropdown();
         }
         else
@@ -142,6 +148,10 @@ public class PlayerInfoMenu
             if (text.text == "Theif") _class = Character.classes.theif;
             if (text.text == "Assassin") _class = Character.classes.assassin;
             if (text.text == "Monk") _class = Character.classes.monk;
+
+            if (text.text == "Magic User") text.fontSize = 20;
+            else text.fontSize = 30;
+
             restrictAlignment();
         }
     }
@@ -153,10 +163,23 @@ public class PlayerInfoMenu
 
         if (text.text == "-")
         {
+            text.fontSize = 30;
             clearReligeonDropdown();
         }
         else
         {
+            text.fontSize = 20;
+
+            if (text.text == "Lawful Good") alignment = Creature.alignments.lawfulGood;
+            if (text.text == "Neutral Good") alignment = Creature.alignments.neutralGood;
+            if (text.text == "Chaotic Good") alignment = Creature.alignments.chaoticGood;
+            if (text.text == "Lawful Neutral") alignment = Creature.alignments.lawfulGood;
+            if (text.text == "True Neutral") alignment = Creature.alignments.trueNeutral;
+            if (text.text == "Chaotic Neutral") alignment = Creature.alignments.chaoticNeutral;
+            if (text.text == "Lawful Evil") alignment = Creature.alignments.lawfulEvil;
+            if (text.text == "Neutral Evil") alignment = Creature.alignments.neutralEvil;
+            if (text.text == "Chaotic Evil") alignment = Creature.alignments.chaoticEvil;
+
             restrictReligeon();
         }
     }
@@ -172,7 +195,7 @@ public class PlayerInfoMenu
         }
         else
         {
-            restrictReligeon();
+            complete = true;
         }
     }
 
@@ -530,13 +553,139 @@ public class PlayerInfoMenu
             if (_abilities->wisdom >= 9) m_DropOptions.Add("Cleric");
         }
 
+        if(race == Character.races.half_elf || race == Character.races.human)
+        {
+            if(_abilities->wisdom >= 12 && _abilities->charisma >= 15)
+            {
+                m_DropOptions.Add("Druid");
+            }
+        }
 
+        if(_abilities->strength >= 9 && _abilities->constitution >= 7) m_DropOptions.Add("Fighter");
+
+        if(race == Character.races.human)
+        {
+            if (_abilities->strength >= 12 && _abilities->intelligence >= 9 && _abilities->wisdom >= 13 && _abilities->constitution >= 9 && _abilities->charisma >= 17) m_DropOptions.Add("Paladin");
+        }
+
+        if(race == Character.races.half_elf || race == Character.races.human)
+        {
+            if (_abilities->strength >= 13 && _abilities->intelligence >= 13 && _abilities->wisdom >= 14 && _abilities->constitution >= 14) m_DropOptions.Add("Ranger");
+        }
+
+        if(race == Character.races.elf || race == Character.races.half_elf || race == Character.races.human)
+        {
+            if (_abilities->intelligence >= 9 && _abilities->dexterity >= 6) m_DropOptions.Add("Magic User");
+        }
+
+        if (race == Character.races.gnome || race == Character.races.human)
+        {
+            if (_abilities->intelligence >= 15 && _abilities->dexterity >= 16) m_DropOptions.Add("Illusionist");
+        }
+
+        if (_abilities->dexterity >= 0) m_DropOptions.Add("Theif");
+
+        if (race != Character.races.halfling)
+        {
+            if (_abilities->strength >= 12 && _abilities->intelligence >= 11 && _abilities->dexterity >= 12) m_DropOptions.Add("Assassin");
+        }
+        
+        if(race == Character.races.human)
+        {
+            if (_abilities->strength >= 15 && _abilities->dexterity >= 15 && _abilities->wisdom >= 15 && _abilities->constitution >= 11) m_DropOptions.Add("Monk");
+        }
 
         dropdown.AddOptions(m_DropOptions);
     }
 
     private void restrictAlignment()
     {
+        GameObject dropDownObject = MenuController.GetChildWithName(menuTransform, "AlignmentDropdown");
+        Dropdown dropdown = dropDownObject.GetComponent<Dropdown>();
+
+        dropdown.ClearOptions();
+
+        List<string> m_DropOptions = new List<string> { "-" };
+
+        if(_class == Character.classes.cleric)
+        {
+            m_DropOptions.Add("Lawful Good");
+            m_DropOptions.Add("Neutral Good");
+            m_DropOptions.Add("Chaotic Good");
+            m_DropOptions.Add("Lawful Neutral");
+            m_DropOptions.Add("True Neutral");
+            m_DropOptions.Add("Chaotic Neutral");
+            m_DropOptions.Add("Lawful Evil");
+            m_DropOptions.Add("Neutral Evil");
+            m_DropOptions.Add("Chaotic Evil");
+        }else if (_class == Character.classes.druid)
+        {
+            m_DropOptions.Add("Lawful Neutral");
+            m_DropOptions.Add("True Neutral");
+            m_DropOptions.Add("Chaotic Neutral");
+        }
+        else if (_class == Character.classes.fighter)
+        {
+            m_DropOptions.Add("Lawful Good");
+            m_DropOptions.Add("Neutral Good");
+            m_DropOptions.Add("Chaotic Good");
+            m_DropOptions.Add("Lawful Neutral");
+            m_DropOptions.Add("True Neutral");
+            m_DropOptions.Add("Chaotic Neutral");
+            m_DropOptions.Add("Lawful Evil");
+            m_DropOptions.Add("Neutral Evil");
+            m_DropOptions.Add("Chaotic Evil");
+        } else if (_class == Character.classes.paladin)
+        {
+            m_DropOptions.Add("Lawful Good");
+        } else if (_class == Character.classes.ranger)
+        {
+            m_DropOptions.Add("Lawful Good");
+            m_DropOptions.Add("Neutral Good");
+            m_DropOptions.Add("Chaotic Good");
+        } else if (_class == Character.classes.magic_user)
+        {
+            m_DropOptions.Add("Lawful Good");
+            m_DropOptions.Add("Neutral Good");
+            m_DropOptions.Add("Chaotic Good");
+            m_DropOptions.Add("Lawful Neutral");
+            m_DropOptions.Add("True Neutral");
+            m_DropOptions.Add("Chaotic Neutral");
+            m_DropOptions.Add("Lawful Evil");
+            m_DropOptions.Add("Neutral Evil");
+            m_DropOptions.Add("Chaotic Evil");
+        } else if (_class == Character.classes.illusionist)
+        {
+            m_DropOptions.Add("Lawful Good");
+            m_DropOptions.Add("Neutral Good");
+            m_DropOptions.Add("Chaotic Good");
+            m_DropOptions.Add("Lawful Neutral");
+            m_DropOptions.Add("True Neutral");
+            m_DropOptions.Add("Chaotic Neutral");
+            m_DropOptions.Add("Lawful Evil");
+            m_DropOptions.Add("Neutral Evil");
+            m_DropOptions.Add("Chaotic Evil");
+        } else if (_class == Character.classes.theif)
+        {
+            m_DropOptions.Add("Lawful Neutral");
+            m_DropOptions.Add("True Neutral");
+            m_DropOptions.Add("Chaotic Neutral");
+            m_DropOptions.Add("Lawful Evil");
+            m_DropOptions.Add("Neutral Evil");
+            m_DropOptions.Add("Chaotic Evil");
+        } else if (_class == Character.classes.assassin)
+        {
+            m_DropOptions.Add("Lawful Evil");
+            m_DropOptions.Add("Neutral Evil");
+            m_DropOptions.Add("Chaotic Evil");
+        } else if (_class == Character.classes.assassin)
+        {
+            m_DropOptions.Add("Lawful Good");
+            m_DropOptions.Add("Lawful Neutral");
+            m_DropOptions.Add("Lawful Evil");
+        }
+
+        dropdown.AddOptions(m_DropOptions);
 
     }
 

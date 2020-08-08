@@ -94,6 +94,17 @@ public class Character : Creature
         public charismaModifiers charismaMods;
     };
 
+    public struct racialModifiers
+    {
+        public int strength;
+        public int intelligence;
+        public int wisdom;
+        public int dexterity;
+        public int constitution;
+        public int charisma;
+    }
+
+
     //ability related functions
     strengthModifiers createStrengthModifiers(int strength, int over18, bool isFighter)
     {
@@ -911,6 +922,7 @@ public class Character : Creature
     //variables
     public abilityModifiers _abilityModifiers;
     public races race;
+    public racialModifiers _racialModifiers;
 
     public Character():base()
     {
